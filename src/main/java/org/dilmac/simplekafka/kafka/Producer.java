@@ -1,6 +1,5 @@
 package org.dilmac.simplekafka.kafka;
 
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dilmac.simplekafka.domain.IssNow;
@@ -8,8 +7,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.function.Function;
 
 @Slf4j
 @Component
@@ -30,20 +30,22 @@ public class Producer {
         .block();
   }
 
+
   private void sendMessage(IssNow msg) {
     kafkaTemplate
         .send("iss-position", msg)
-        .addCallback(
-            new ListenableFutureCallback<>() {
-              @Override
-              public void onSuccess(SendResult<String, IssNow> result) {
-                log.info("Successfully sent message to iss-position::positions: {}", result);
-              }
+        .thenAccept(Producer::accept)
+        .exceptionally(reject(msg));
+  }
 
-              @Override
-              public void onFailure(@NonNull Throwable throwable) {
-                log.warn("Failed to send message to iss-position::positions: {}", msg, throwable);
-              }
-            });
+  private static void accept(SendResult<String, IssNow> result) {
+    log.info("Successfully sent message to iss-position::positions: {}", result);
+  }
+
+  private static Function<Throwable, Void> reject(IssNow msg) {
+    return throwable -> {
+      log.warn("Failed to send message to iss-position::positions: {}", msg, throwable);
+      return null;
+    };
   }
 }

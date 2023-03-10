@@ -10,21 +10,19 @@ For further information, please refer to [Open-Notify-API](https://github.com/op
 In the scope of this project, the API endpoint [iss-now.json](http://api.open-notify.org/iss-now.json) is used to fetch ISS position data, in order to generate on-the-fly data for Kafka producer. 
 
 ## Kafka Cluster
-
 Start the Kafka Cluster by running the service **kafka**
 in [docker-compose.yaml](docker-compose.yml) from IntelliJ.
 
 Alternatively, you can run the following CLI command in the project root.
 
 ````shell
-docker-compose up 
+docker-compose up
 ````
 
 ## Local Deployment
 
 Having started the Kafka cluster, you can deploy **simple-kafka** to local by simply running the service
-in [SimpleKafkaApplication](src/main/java/org/improvisations/simplekafka/SimpleKafkaApplication.java)
-.
+in [SimpleKafkaApplication](src/main/java/org/dilmac/simplekafka/SimpleKafkaApplication.java).
 
 Alternatively, you can run the following CLI command in the project root.
 
@@ -32,7 +30,10 @@ Alternatively, you can run the following CLI command in the project root.
 ./gradlew bootRun
 ````
 
-Logs will flow as follow:
+> Please remember to install **Java 17** before running the gradle command.
+
+Logs will flow as follows:
+
 ````shell
 2021-08-14 22:37:57.056  INFO 1760 --- [ctor-http-nio-3] o.a.kafka.common.utils.AppInfoParser     : Kafka version: 2.7.1
 2021-08-14 22:37:57.056  INFO 1760 --- [ctor-http-nio-3] o.a.kafka.common.utils.AppInfoParser     : Kafka commitId: 61dbce85d0d41457
